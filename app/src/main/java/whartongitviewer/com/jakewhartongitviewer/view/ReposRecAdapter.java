@@ -1,11 +1,9 @@
 package whartongitviewer.com.jakewhartongitviewer.view;
 
 import android.content.Context;
-import android.icu.util.Calendar;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v7.widget.RecyclerView;
-import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,7 +20,7 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import whartongitviewer.com.jakewhartongitviewer.R;
-import whartongitviewer.com.jakewhartongitviewer.Presenter;
+import whartongitviewer.com.jakewhartongitviewer.presenter.Presenter;
 import whartongitviewer.com.jakewhartongitviewer.model.pojo.Reposit;
 
 

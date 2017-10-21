@@ -3,11 +3,10 @@ package whartongitviewer.com.jakewhartongitviewer.model;
 
 import java.util.List;
 
-import whartongitviewer.com.jakewhartongitviewer.GetRepoListOkHttp;
-import whartongitviewer.com.jakewhartongitviewer.Net;
+import whartongitviewer.com.jakewhartongitviewer.model.net.GetRepoListOkHttp;
+import whartongitviewer.com.jakewhartongitviewer.model.net.Net;
 import whartongitviewer.com.jakewhartongitviewer.model.pojo.Reposit;
-import whartongitviewer.com.jakewhartongitviewer.mvp.IRepoModel;
-import whartongitviewer.com.jakewhartongitviewer.mvp.IRepoPresenter;
+import whartongitviewer.com.jakewhartongitviewer.presenter.IRepoPresenter;
 
 public class RepoModel implements IRepoModel {
     List<Reposit> repoList;

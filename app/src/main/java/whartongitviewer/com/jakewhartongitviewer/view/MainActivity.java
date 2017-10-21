@@ -1,4 +1,4 @@
-package whartongitviewer.com.jakewhartongitviewer;
+package whartongitviewer.com.jakewhartongitviewer.view;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,9 +13,9 @@ import android.widget.ProgressBar;
 
 import java.lang.ref.WeakReference;
 
-import whartongitviewer.com.jakewhartongitviewer.view.ReposRecAdapter;
-import whartongitviewer.com.jakewhartongitviewer.mvp.IRepoListView;
-import whartongitviewer.com.jakewhartongitviewer.mvp.IRepoPresenter;
+import whartongitviewer.com.jakewhartongitviewer.presenter.Presenter;
+import whartongitviewer.com.jakewhartongitviewer.R;
+import whartongitviewer.com.jakewhartongitviewer.presenter.IRepoPresenter;
 
 public class MainActivity extends AppCompatActivity implements IRepoListView {
 

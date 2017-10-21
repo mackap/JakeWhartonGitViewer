@@ -1,10 +1,11 @@
-package whartongitviewer.com.jakewhartongitviewer.mvp;
+package whartongitviewer.com.jakewhartongitviewer.presenter;
 
 
 import java.lang.ref.WeakReference;
 import java.util.List;
 
 import whartongitviewer.com.jakewhartongitviewer.model.pojo.Reposit;
+import whartongitviewer.com.jakewhartongitviewer.view.IRepoListView;
 import whartongitviewer.com.jakewhartongitviewer.view.ReposRecAdapter;
 
 public interface IRepoPresenter {

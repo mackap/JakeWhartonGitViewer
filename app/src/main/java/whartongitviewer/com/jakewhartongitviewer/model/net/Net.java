@@ -1,4 +1,4 @@
-package whartongitviewer.com.jakewhartongitviewer;
+package whartongitviewer.com.jakewhartongitviewer.model.net;
 
 
 import okhttp3.OkHttpClient;

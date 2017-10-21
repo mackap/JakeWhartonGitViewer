@@ -1,14 +1,15 @@
-package whartongitviewer.com.jakewhartongitviewer;
+package whartongitviewer.com.jakewhartongitviewer.view;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import whartongitviewer.com.jakewhartongitviewer.R;
 import whartongitviewer.com.jakewhartongitviewer.model.pojo.Reposit;
+import whartongitviewer.com.jakewhartongitviewer.presenter.Presenter;
 
 
 public class ActivityDetail extends AppCompatActivity {

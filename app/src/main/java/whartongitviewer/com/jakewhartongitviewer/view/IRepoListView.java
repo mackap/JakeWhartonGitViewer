@@ -1,4 +1,4 @@
-package whartongitviewer.com.jakewhartongitviewer.mvp;
+package whartongitviewer.com.jakewhartongitviewer.view;
 
 
 import java.util.List;

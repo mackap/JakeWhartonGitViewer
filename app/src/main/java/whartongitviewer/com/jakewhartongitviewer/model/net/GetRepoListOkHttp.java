@@ -1,4 +1,4 @@
-package whartongitviewer.com.jakewhartongitviewer;
+package whartongitviewer.com.jakewhartongitviewer.model.net;
 
 
 import android.util.Log;
@@ -16,6 +16,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+import whartongitviewer.com.jakewhartongitviewer.presenter.Presenter;
 import whartongitviewer.com.jakewhartongitviewer.model.pojo.Reposit;
 
 public class GetRepoListOkHttp implements Callback {
