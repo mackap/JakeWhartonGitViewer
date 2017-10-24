@@ -28,7 +28,6 @@ public class GetRepoListOkHttp implements Callback {
     List<Reposit> repositoryList;
 
     public GetRepoListOkHttp(OkHttpClient client) {
-        Log.d(TAG, "---------------------constr");
         this.client = client;
         request = new Request.Builder()
                 .url(Net.BASE_URL)
@@ -47,11 +46,10 @@ public class GetRepoListOkHttp implements Callback {
     @Override
     public void onResponse(Call call, Response response) {
         String strResp = "";
-        Log.d(TAG, "--------------- header:" + response.header("Link"));
         try {
             strResp = response.body().string();
             try {
-         List<Reposit> repoListResponses = new Gson().fromJson(strResp, new TypeToken<List<Reposit>>(){}.getType());
+              List<Reposit> repoListResponses = new Gson().fromJson(strResp, new TypeToken<List<Reposit>>(){}.getType());
                 Presenter.getInstance().getRepoListCallback(repoListResponses);
             } catch (JsonParseException e) {
                 Log.d(TAG, "onResponse(), JSONException, e=" + e.getMessage());
@@ -66,7 +64,6 @@ public class GetRepoListOkHttp implements Callback {
     }
 
     private void returtErrorMessage(String message) {
-        Log.d(TAG, "---------------------returtErrorMessage()");
          Presenter.getInstance().getRepoListCallback(message);
     }
 }

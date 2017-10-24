@@ -53,6 +53,8 @@ public class MainActivity extends AppCompatActivity implements IRepoListView {
     protected void onResume() {
         super.onResume();
         presenter.setRepoListView(new WeakReference<IRepoListView>(this));
+
+        //// if rotation scren, update data from presenter
         recAdapter = presenter.getRepoRecAdapter();
         recyclerViewRepos.setAdapter(recAdapter);
 
