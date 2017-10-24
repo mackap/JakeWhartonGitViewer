@@ -59,7 +59,7 @@ public class Presenter implements IRepoPresenter {
         repoModel.setRepoList(repositoryList);
         if (repoListViewWeakReference != null && repoListViewWeakReference.get() != null) {
             if (reposRecAdapter != null) {
-                reposRecAdapter.updateData(null);
+                reposRecAdapter.updateData(repositoryList);
             }
             repoListViewWeakReference.get().showProgress(false);
         }else {
