@@ -6,7 +6,7 @@ import okhttp3.OkHttpClient;
 public class Net {
 
     static final String BASE_URL = "https://api.github.com/users/JakeWharton/repos?per_page=100";
-    public static OkHttpClient okHttpClient;
+    private static OkHttpClient okHttpClient;
 
     public static OkHttpClient getOkHttpClient() {
         if (okHttpClient == null) {
