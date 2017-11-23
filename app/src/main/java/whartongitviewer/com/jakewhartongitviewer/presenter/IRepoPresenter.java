@@ -11,14 +11,24 @@ import whartongitviewer.com.jakewhartongitviewer.view.ReposRecAdapter;
 public interface IRepoPresenter {
 
     void setRepoListView(WeakReference<IRepoListView> repoListViewWeakReference);
-    List<Reposit> getRepoList();
-    void getRepoListCallback(List<Reposit> repoListResponses);
-    void getRepoListCallback(String errorMessage);
+
+    void getRepoList();
+
+    void updateData(List<Reposit> repoListResponses);
+
+    void showErrorMessage(String errorMessage);
+
     void clickToRepoItem(long repository);
+
     Reposit getRepoFromId(long currentRepoId);
+
     ReposRecAdapter getRepoRecAdapter();
-    void setIfFloatButtonVisible(boolean isVisible);
-    boolean getIfFloatButtonVisible();
-    boolean getIfShowProgress();
-    void setIfShowProgress(boolean isShow);
+
+    void setStates(Presenter.STATES currentStates);
+
+    Presenter.STATES getCurrentStates();
+
+    String getCurrentErrorMessage();
+
+    boolean isShowNextButton();
 }
