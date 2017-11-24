@@ -12,6 +12,11 @@ import whartongitviewer.com.jakewhartongitviewer.model.pojo.Reposit;
 
 public interface NetworkAPI {
      interface GitHubService{
+         /**
+          *
+          * @param user username in gitHub
+          * @return Call object with List users Reposit
+          */
         @GET("users/{user}/repos")
         Call<List<Reposit>> getRepos(@Path("user") String user);
 

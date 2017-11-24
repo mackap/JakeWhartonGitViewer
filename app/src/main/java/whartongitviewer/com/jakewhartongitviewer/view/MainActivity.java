@@ -17,6 +17,9 @@ import org.reactivestreams.Subscription;
 
 import java.lang.ref.WeakReference;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
@@ -31,34 +34,37 @@ import whartongitviewer.com.jakewhartongitviewer.R;
 import whartongitviewer.com.jakewhartongitviewer.presenter.IRepoPresenter;
 
 public class MainActivity extends AppCompatActivity implements IRepoListView {
-private final String TAG = getClass().getSimpleName();
+    private final String TAG = getClass().getSimpleName();
     IRepoPresenter presenter;
+    @BindView(R.id.rec_view_main_activity)
     RecyclerView recyclerView;
+    @BindView(R.id.progress_main_activity)
     ProgressBar progressBar;
+    @BindView(R.id.fab)
     FloatingActionButton fbutton;
     AlertDialog alertDialog;
+    Unbinder unbinder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        progressBar = (ProgressBar) findViewById(R.id.progress_main_activity);
-        fbutton = (FloatingActionButton) findViewById(R.id.fab);
-        recyclerView = (RecyclerView) findViewById(R.id.rec_view_main_activity);
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        unbinder = ButterKnife.bind(this);
         presenter = ((JWApp) getApplication()).getPresenter();
         presenter.setRepoListView(new WeakReference<IRepoListView>(this));
         showCurrentState();
-
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        unbinder.unbind();
         presenter.setRepoListView(null);
     }
 
@@ -76,7 +82,7 @@ private final String TAG = getClass().getSimpleName();
                     break;
             }
         } else {
-            //// if didnt found status, its mean that start app or content lost
+            //// if didnt found status, its mean that start app or content was lost
             loadRepos();
         }
     }
@@ -91,27 +97,26 @@ private final String TAG = getClass().getSimpleName();
         showNextButton();
     }
 
-    private void showNextButton(){
+    private void showNextButton() {
 
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    if (presenter.isShowNextButton()) {
-                        fbutton.setVisibility(View.VISIBLE);
-                        fbutton.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                presenter.getRepoList();
-                            }
-                        });
-                    }else {
-                        fbutton.setVisibility(View.GONE);
-                    }
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (presenter.isShowNextButton()) {
+                    fbutton.setVisibility(View.VISIBLE);
+                    fbutton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            presenter.getRepoList();
+                        }
+                    });
+                } else {
+                    fbutton.setVisibility(View.GONE);
                 }
-            });
-
-
+            }
+        });
     }
+
     public void loadRepos() {
         presenter.getRepoList();
     }
@@ -143,7 +148,7 @@ private final String TAG = getClass().getSimpleName();
 
     @Override
     public void showErrorMessage() {
-      String message =  presenter.getCurrentErrorMessage();
+        String message = presenter.getCurrentErrorMessage();
         showProgress(false);
         runOnUiThread(new Runnable() {
             @Override
@@ -158,14 +163,12 @@ private final String TAG = getClass().getSimpleName();
                         alertDialog.dismiss();
                     }
                 });
-                if(alertDialog==null || !alertDialog.isShowing()) {
+                if (alertDialog == null || !alertDialog.isShowing()) {
                     alertDialog = builder.create();
                     alertDialog.show();
                 }
             }
         });
     }
-public void log(String logMessage){
-    Log.d(TAG, "--------------------- "+logMessage);
-}
+
 }

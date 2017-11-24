@@ -14,9 +14,7 @@ public interface IRepoPresenter {
 
     void getRepoList();
 
-    void updateData(List<Reposit> repoListResponses);
-
-    void showErrorMessage(String errorMessage);
+    void showErrorMessage();
 
     void clickToRepoItem(long repository);
 

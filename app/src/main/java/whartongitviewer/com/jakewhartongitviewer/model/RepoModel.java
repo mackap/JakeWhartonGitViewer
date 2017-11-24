@@ -17,8 +17,8 @@ public class RepoModel implements IRepoModel {
 
     @Override
     public List<Reposit> getRepoList() {
-
         return repoList;
+
     }
 
     @Override
@@ -33,9 +33,9 @@ public class RepoModel implements IRepoModel {
         }else {
             repoList.addAll(addRepositList);
         }
-
-        repoPresenter.updateData(repoList);
     }
+
+
 
     @Override
     public Reposit getRepoFromId(long currentRepoId) {

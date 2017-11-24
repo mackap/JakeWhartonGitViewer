@@ -1,5 +1,6 @@
 package whartongitviewer.com.jakewhartongitviewer.view;
 
+import android.app.Application;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
@@ -7,6 +8,7 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import whartongitviewer.com.jakewhartongitviewer.JWApp;
 import whartongitviewer.com.jakewhartongitviewer.R;
 import whartongitviewer.com.jakewhartongitviewer.model.pojo.Reposit;
 import whartongitviewer.com.jakewhartongitviewer.presenter.Presenter;
@@ -26,7 +28,7 @@ public class ActivityDetail extends AppCompatActivity {
     TextView tvForks;
     @BindView(R.id.tv_issues_act_detail)
     TextView tvIssues;
-
+    Presenter presenter;
     Reposit repository;
     long currentRepoId;
     Unbinder unbinder;
@@ -35,6 +37,7 @@ public class ActivityDetail extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+        presenter = ((JWApp) getApplication()).getPresenter();
     }
 
     @Override
@@ -43,7 +46,7 @@ public class ActivityDetail extends AppCompatActivity {
         unbinder = ButterKnife.bind(this);
         ////// in this place we solve rotation screen  - intent the same always
         currentRepoId = getIntent().getLongExtra(Presenter.REPO_DETAIL_ID, 0);
-        repository = Presenter.getInstance().getRepoFromId(currentRepoId);
+        repository = presenter.getRepoFromId(currentRepoId);
         if (repository != null) {
             tvRepName.setText(repository.getName());
             tvRepDescr.setText(repository.getDescription());

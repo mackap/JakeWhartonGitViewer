@@ -87,16 +87,6 @@ public class ReposRecAdapter extends RecyclerView.Adapter<ReposRecAdapter.RepHol
     }
 
 
-    public void updateData(List<Reposit> repositoryList) {
-        this.repositoryList = repositoryList;
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
-            @Override
-            public void run() {
-                notifyDataSetChanged();
-            }
-        });
-
-    }
 
     public static class RepHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.rel_layout_repo_item)

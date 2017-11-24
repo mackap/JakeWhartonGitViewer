@@ -4,8 +4,9 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 
-public class NetUtils {
+public class RetrofitInstance {
 private final static String BASE_URL = "https://api.github.com/";
+
     private static Retrofit retrofit;
     public static Retrofit getRetrofit(){
         if(retrofit==null) {

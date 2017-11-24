@@ -1,7 +1,5 @@
 package whartongitviewer.com.jakewhartongitviewer.presenter;
 
-import android.util.Log;
-
 import java.lang.ref.WeakReference;
 import java.util.List;
 
@@ -10,7 +8,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import whartongitviewer.com.jakewhartongitviewer.model.RepoModel;
-import whartongitviewer.com.jakewhartongitviewer.model.net.NetUtils;
+import whartongitviewer.com.jakewhartongitviewer.model.net.RetrofitInstance;
 import whartongitviewer.com.jakewhartongitviewer.model.net.NetworkAPI;
 import whartongitviewer.com.jakewhartongitviewer.model.pojo.Reposit;
 import whartongitviewer.com.jakewhartongitviewer.view.IRepoListView;
@@ -22,6 +20,7 @@ public class Presenter implements IRepoPresenter {
     private static final Presenter presenter = new Presenter();
 
     public static enum STATES {PROGRESS, SHOW_REPOS, SHOW_ERROR}
+
     private STATES currentStates;
 
     private final String HEADER_LINK = "Link";
@@ -39,7 +38,7 @@ public class Presenter implements IRepoPresenter {
 
     private Presenter() {
         repoModel = new RepoModel(this);
-        api = NetUtils.getRetrofit().create(NetworkAPI.GitHubService.class);
+        api = RetrofitInstance.getRetrofit().create(NetworkAPI.GitHubService.class);
     }
 
     public static Presenter getInstance() {
@@ -59,13 +58,23 @@ public class Presenter implements IRepoPresenter {
         if (repoListViewWeakReference != null && repoListViewWeakReference.get() != null) {
             repoListViewWeakReference.get().showProgress(true);
         }
+
         currentStates = STATES.PROGRESS;
+
         Call<List<Reposit>> repoListCall;
+
+        //// check if need load next page data
         if (nextLink == null) {
             repoListCall = api.getRepos(USER);
         } else {
             repoListCall = api.getNextUserRepo(nextLink);
         }
+
+        loadRepo(repoListCall);
+    }
+
+    private void loadRepo(Call<List<Reposit>> repoListCall) {
+
         repoListCall.enqueue(new Callback<List<Reposit>>() {
             @Override
             public void onResponse(Call<List<Reposit>> call, Response<List<Reposit>> response) {
@@ -79,7 +88,8 @@ public class Presenter implements IRepoPresenter {
 
             @Override
             public void onFailure(Call<List<Reposit>> call, Throwable t) {
-                presenter.showErrorMessage(t.getMessage());
+                currentErrorMessage = t.getMessage();
+                showErrorMessage();
             }
         });
     }
@@ -94,42 +104,47 @@ public class Presenter implements IRepoPresenter {
         this.repoListViewWeakReference = repoListViewWeakReference;
     }
 
-
+    /**
+     * show  error message, which save in currentErrorMessage
+     */
     @Override
-    public void updateData(List<Reposit> repositoryList) {
-        repoModel.setRepoList(repositoryList);
-        if (repoListViewWeakReference != null && repoListViewWeakReference.get() != null) {
-            if (reposRecAdapter != null) {
-                reposRecAdapter.updateData(repositoryList);
-            }
-            repoListViewWeakReference.get().showProgress(false);
-        }
-    }
+    public void showErrorMessage() {
 
-    @Override
-    public void showErrorMessage(String errorMessage) {
-        currentErrorMessage = errorMessage;
         currentStates = STATES.SHOW_ERROR;
         if (repoListViewWeakReference != null && repoListViewWeakReference.get() != null) {
-
             repoListViewWeakReference.get().showProgress(false);
-            repoListViewWeakReference.get().showErrorMessage();
+            if (currentErrorMessage != null) {
+                repoListViewWeakReference.get().showErrorMessage();
+            }
         }
     }
 
+    /**
+     * @param currentRepoId for details view
+     * @return Reposit object with currentRepoId
+     */
     @Override
     public Reposit getRepoFromId(long currentRepoId) {
         return repoModel.getRepoFromId(currentRepoId);
     }
 
+    /**
+     * check if show button to load next page data
+     */
     @Override
     public boolean isShowNextButton() {
         return nextLink != null;
     }
 
-    private String getNextLinkFromGitHub(Headers headers) {
-        String linkFromGitHub = headers.get(HEADER_LINK);
-
+    /**
+     * @param headers from responce
+     * @return url next page with data if it is exist
+     */
+    public String getNextLinkFromGitHub(Headers headers) {
+        String linkFromGitHub = null;
+        if(headers!=null) {
+            linkFromGitHub   = headers.get(HEADER_LINK);
+        }
         if (linkFromGitHub != null) {
             String[] linksArr = linkFromGitHub.split(",");
             for (String string : linksArr) {
@@ -140,7 +155,6 @@ public class Presenter implements IRepoPresenter {
         }
         return null;
     }
-
 
 
     @Override
