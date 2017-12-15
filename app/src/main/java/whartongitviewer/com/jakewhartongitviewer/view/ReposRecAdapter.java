@@ -44,27 +44,31 @@ public class ReposRecAdapter extends RecyclerView.Adapter<ReposRecAdapter.RepHol
     public void onBindViewHolder(RepHolder holder, int position) {
 
         if (repositoryList != null) {
-            final Reposit repository = repositoryList.get(position);
-            if (repository != null) {
-                holder.tvRepTitle.setText(repository.getName());
-                holder.tvRepShortDescr.setText(repository.getDescription());
-                holder.tvLang.setText(repository.getLanguage() != null ? repository.getLanguage().toString() : "---");
+            final Reposit repositItem = repositoryList.get(position);
+            if (repositItem != null) {
+                holder.tvRepTitle.setText(repositItem.getName());
+                holder.tvRepShortDescr.setText(repositItem.getDescription());
+                holder.tvLang.setText(repositItem.getLanguage() != null ? repositItem.getLanguage().toString() : "---");
                 holder.tvStarsCount.setText(context.getString(R.string.text_stars)
-                        + repository.getStargazersCount());
+                        + repositItem.getStargazersCount());
 
                 holder.tvForksCount.setText(context.getString(R.string.text_forks)
-                        + repository.getForksCount() + "");
+                        + repositItem.getForksCount() + "");
 
                 holder.tvUpdateDate.setText(context.getString(R.string.text_update_on)
-                        + getFormatData(repository.getUpdatedAt()));
+                        + getFormatData(repositItem.getUpdatedAt()));
                 holder.relLayoutRepoItem.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Presenter.getInstance().clickToRepoItem(repository.getId());
+                        Presenter.getInstance().clickToRepoItem(repositItem.getId());
                     }
                 });
             }
         }
+    }
+
+    public void updateRepoList(List<Reposit> repositList) {
+        this.repositoryList = repositList;
     }
 
     private String getFormatData(String strDate) {
@@ -85,7 +89,6 @@ public class ReposRecAdapter extends RecyclerView.Adapter<ReposRecAdapter.RepHol
     public int getItemCount() {
         return repositoryList == null ? 0 : repositoryList.size();
     }
-
 
 
     public static class RepHolder extends RecyclerView.ViewHolder {

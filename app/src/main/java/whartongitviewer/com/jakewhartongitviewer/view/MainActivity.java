@@ -8,26 +8,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
-
-import org.reactivestreams.Subscriber;
-import org.reactivestreams.Subscription;
 
 import java.lang.ref.WeakReference;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import io.reactivex.Flowable;
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.annotations.NonNull;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
-import okhttp3.Response;
 import whartongitviewer.com.jakewhartongitviewer.JWApp;
 import whartongitviewer.com.jakewhartongitviewer.presenter.Presenter;
 import whartongitviewer.com.jakewhartongitviewer.R;
@@ -41,15 +29,15 @@ public class MainActivity extends AppCompatActivity implements IRepoListView {
     @BindView(R.id.progress_main_activity)
     ProgressBar progressBar;
     @BindView(R.id.fab)
-    FloatingActionButton fbutton;
+    FloatingActionButton fbLoadRepo;
     AlertDialog alertDialog;
     Unbinder unbinder;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
     }
 
     @Override
@@ -57,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements IRepoListView {
         super.onResume();
         unbinder = ButterKnife.bind(this);
         presenter = ((JWApp) getApplication()).getPresenter();
-        presenter.setRepoListView(new WeakReference<IRepoListView>(this));
+        presenter.setReposView(new WeakReference<IRepoListView>(this));
         showCurrentState();
     }
 
@@ -65,26 +53,22 @@ public class MainActivity extends AppCompatActivity implements IRepoListView {
     protected void onPause() {
         super.onPause();
         unbinder.unbind();
-        presenter.setRepoListView(null);
+        presenter.setReposView(null);
     }
 
     private void showCurrentState() {
-        if (presenter.getCurrentStates() != null) {
             switch (presenter.getCurrentStates()) {
                 case PROGRESS:
                     showProgress(true);
                     break;
-                case SHOW_REPOS:
-                    showRepos();
-                    break;
                 case SHOW_ERROR:
                     showErrorMessage();
                     break;
+                case SHOW_REPOS:
+                    default:
+                    showRepos();
+                    break;
             }
-        } else {
-            //// if didnt found status, its mean that start app or content was lost
-            loadRepos();
-        }
     }
 
     @Override
@@ -94,38 +78,38 @@ public class MainActivity extends AppCompatActivity implements IRepoListView {
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(presenter.getRepoRecAdapter());
-        showNextButton();
+        setNextButton();
+
     }
 
-    private void showNextButton() {
+    private void setNextButton() {
 
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 if (presenter.isShowNextButton()) {
-                    fbutton.setVisibility(View.VISIBLE);
-                    fbutton.setOnClickListener(new View.OnClickListener() {
+                    fbLoadRepo.setVisibility(View.VISIBLE);
+                    fbLoadRepo.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            presenter.getRepoList();
+                            presenter.clickToLoadRepoButton();
                         }
                     });
                 } else {
-                    fbutton.setVisibility(View.GONE);
+                    fbLoadRepo.setVisibility(View.GONE);
                 }
             }
         });
     }
 
-    public void loadRepos() {
-        presenter.getRepoList();
-    }
+
 
     @Override
     public void showDetailView(long repoId) {
         Intent intent = new Intent(this, ActivityDetail.class);
         intent.putExtra(Presenter.REPO_DETAIL_ID, repoId);
         startActivity(intent);
+        overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
     }
 
     @Override
@@ -136,14 +120,15 @@ public class MainActivity extends AppCompatActivity implements IRepoListView {
                 if (isShowProgress) {
                     progressBar.setVisibility(View.VISIBLE);
                     recyclerView.setVisibility(View.GONE);
-                    fbutton.setVisibility(View.GONE);
+                    fbLoadRepo.setVisibility(View.GONE);
                 } else {
                     progressBar.setVisibility(View.GONE);
                     recyclerView.setVisibility(View.VISIBLE);
-                    fbutton.setVisibility(View.VISIBLE);
+                    fbLoadRepo.setVisibility(View.VISIBLE);
                 }
             }
         });
+
     }
 
     @Override
@@ -153,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements IRepoListView {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                fbutton.setVisibility(View.VISIBLE);
+                fbLoadRepo.setVisibility(View.VISIBLE);
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                 builder.setMessage(message);
@@ -170,5 +155,6 @@ public class MainActivity extends AppCompatActivity implements IRepoListView {
             }
         });
     }
+
 
 }

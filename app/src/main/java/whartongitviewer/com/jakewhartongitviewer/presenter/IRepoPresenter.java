@@ -10,9 +10,13 @@ import whartongitviewer.com.jakewhartongitviewer.view.ReposRecAdapter;
 
 public interface IRepoPresenter {
 
-    void setRepoListView(WeakReference<IRepoListView> repoListViewWeakReference);
+    public interface LoadRepoCallback {
+        void onSuccess();
+        void onError(String errorMessage);
+    }
+    void setReposView(WeakReference<IRepoListView> repoListViewWeakReference);
 
-    void getRepoList();
+    void clickToLoadRepoButton();
 
     void showErrorMessage();
 
@@ -27,6 +31,7 @@ public interface IRepoPresenter {
     Presenter.STATES getCurrentStates();
 
     String getCurrentErrorMessage();
+    void  setCurrentErrorMessage(String message);
 
     boolean isShowNextButton();
 }

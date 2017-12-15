@@ -26,6 +26,6 @@
         android:layout_gravity="bottom|end"
         android:scaleType="fitXY"
         android:layout_margin="@dimen/fab_margin"
-        android:visibility="gone"
+        android:visibility="visible"
         android:src="@android:drawable/ic_input_add"/>
 </FrameLayout>
