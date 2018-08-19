@@ -4,11 +4,14 @@ package whartongitviewer.com.jakewhartongitviewer.presenter;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
+import whartongitviewer.com.jakewhartongitviewer.model.IRepoModel;
 import whartongitviewer.com.jakewhartongitviewer.model.pojo.Reposit;
 import whartongitviewer.com.jakewhartongitviewer.view.IRepoListView;
 import whartongitviewer.com.jakewhartongitviewer.view.ReposRecAdapter;
 
 public interface IRepoPresenter {
+
+    IRepoModel getRepoModel();
 
     public interface LoadRepoCallback {
         void onSuccess();
@@ -24,9 +27,7 @@ public interface IRepoPresenter {
 
     Reposit getRepoFromId(long currentRepoId);
 
-    ReposRecAdapter getRepoRecAdapter();
-
-    void setStates(Presenter.STATES currentStates);
+     void setStates(Presenter.STATES currentStates);
 
     Presenter.STATES getCurrentStates();
 

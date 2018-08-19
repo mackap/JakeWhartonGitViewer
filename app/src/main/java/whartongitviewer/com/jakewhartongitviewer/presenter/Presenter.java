@@ -16,121 +16,127 @@ import static whartongitviewer.com.jakewhartongitviewer.util.EspressoIdlingResou
 
 
 public class Presenter implements IRepoPresenter {
-    private static final Presenter presenter = new Presenter();
 
-    public enum STATES {PROGRESS, SHOW_REPOS, SHOW_ERROR}
-    private STATES currentStates = SHOW_REPOS;
-    public static String REPO_DETAIL_ID = "repoId";
-    String currentErrorMessage;
-    private IRepoModel repoModel;
-    private WeakReference<IRepoListView> repoListViewWeakReference;
-    private ReposRecAdapter reposRecAdapter;
+  private static Presenter presenter;
 
-    private Presenter() {
-        repoModel = new RepoModel(this);
-    }
+  public enum STATES {PROGRESS, SHOW_REPOS, SHOW_ERROR}
 
-    public static Presenter getInstance() {
-        return presenter;
-    }
+  private STATES currentStates = SHOW_REPOS;
+  private static final Object LOCK = new Object();
 
-    @Override
-    public ReposRecAdapter getRepoRecAdapter() {
-        if (reposRecAdapter == null) {
-            reposRecAdapter = new ReposRecAdapter(repoModel.getRepoList());
-        } else {
-            reposRecAdapter.updateRepoList(repoModel.getRepoList());
+  public static String REPO_DETAIL_ID = "repoId";
+  private String currentErrorMessage;
+  private IRepoModel repoModel;
+  private WeakReference<IRepoListView> repoListViewWeakReference;
+
+
+  private Presenter() {
+    repoModel = new RepoModel(this);
+  }
+
+  public static Presenter getInstance() {
+    if (presenter == null) {
+      synchronized (LOCK) {
+        if (presenter == null) {
+          presenter = new Presenter();
         }
-        return reposRecAdapter;
+      }
     }
+    return presenter;
+  }
 
-    @Override
-    public void clickToLoadRepoButton() {
+  @Override
+  public IRepoModel getRepoModel() {
+    return repoModel;
+  }
 
-        repoListViewWeakReference.get().showProgress(true);
-        currentStates = STATES.PROGRESS;
-        EspressoIdlingResource.increment();
-        repoModel.loadRepos(new LoadRepoCallback() {
-            @Override
-            public void onSuccess() {
-                currentStates = SHOW_REPOS;
-                if (repoListViewWeakReference != null && repoListViewWeakReference.get() != null) {
-                    repoListViewWeakReference.get().showRepos();
-                }
-                EspressoIdlingResource.decrement();
-            }
+  @Override
+  public void clickToLoadRepoButton() {
 
-            @Override
-            public void onError(String errorMessage) {
-                currentErrorMessage = errorMessage;
-                showErrorMessage();
-                EspressoIdlingResource.decrement();
-            }
-        });
-
-    }
-
-
-    @Override
-    public void clickToRepoItem(long repoId) {
-        repoListViewWeakReference.get().showDetailView(repoId);
-    }
-
-    @Override
-    public void setReposView(WeakReference<IRepoListView> repoListViewWeakReference) {
-        this.repoListViewWeakReference = repoListViewWeakReference;
-    }
-
-    /**
-     * show  error message, which save in currentErrorMessage
-     */
-    @Override
-    public void showErrorMessage() {
-
-        currentStates = STATES.SHOW_ERROR;
+    repoListViewWeakReference.get().showProgress(true);
+    currentStates = STATES.PROGRESS;
+    EspressoIdlingResource.increment();
+    repoModel.loadRepos(new LoadRepoCallback() {
+      @Override
+      public void onSuccess() {
+        currentStates = SHOW_REPOS;
         if (repoListViewWeakReference != null && repoListViewWeakReference.get() != null) {
-            repoListViewWeakReference.get().showProgress(false);
-            if (currentErrorMessage != null) {
-                repoListViewWeakReference.get().showErrorMessage();
-            }
+          repoListViewWeakReference.get().showRepos();
         }
-    }
+        EspressoIdlingResource.decrement();
+      }
 
-    /**
-     * @param currentRepoId for details view
-     * @return Reposit object with currentRepoId
-     */
-    @Override
-    public Reposit getRepoFromId(long currentRepoId) {
-        return repoModel.getRepoFromId(currentRepoId);
-    }
+      @Override
+      public void onError(String errorMessage) {
+        currentErrorMessage = errorMessage;
+        showErrorMessage();
+        EspressoIdlingResource.decrement();
+      }
+    });
 
-    /**
-     * check if show button to load next page data
-     */
-    @Override
-    public boolean isShowNextButton() {
-        return repoModel.getNextLink() != null || repoModel.getRepoList() == null;
-    }
+  }
 
 
-    @Override
-    public void setStates(STATES currentStates) {
-        this.currentStates = currentStates;
-    }
+  @Override
+  public void clickToRepoItem(long repoId) {
+    repoListViewWeakReference.get().showDetailView(repoId);
+  }
 
-    @Override
-    public void setCurrentErrorMessage(String message) {
-        this.currentErrorMessage = message;
-    }
+  @Override
+  public void setReposView(WeakReference<IRepoListView> repoListViewWeakReference) {
+    this.repoListViewWeakReference = repoListViewWeakReference;
+  }
 
-    @Override
-    public String getCurrentErrorMessage() {
-        return currentErrorMessage;
-    }
+  /**
+   * show  error message, which save in currentErrorMessage
+   */
+  @Override
+  public void showErrorMessage() {
 
-    @Override
-    public STATES getCurrentStates() {
-        return currentStates;
+    currentStates = STATES.SHOW_ERROR;
+    if (repoListViewWeakReference != null && repoListViewWeakReference.get() != null) {
+      repoListViewWeakReference.get().showProgress(false);
+      if (currentErrorMessage != null) {
+        repoListViewWeakReference.get().showErrorMessage();
+      }
     }
+  }
+
+  /**
+   * @param currentRepoId for details view
+   * @return Reposit object with currentRepoId
+   */
+  @Override
+  public Reposit getRepoFromId(long currentRepoId) {
+    return repoModel.getRepoFromId(currentRepoId);
+  }
+
+  /**
+   * check if show button to load next page data
+   */
+  @Override
+  public boolean isShowNextButton() {
+    return repoModel.getNextLink() != null || repoModel.getRepoList() == null;
+  }
+
+
+  @Override
+  public void setStates(STATES currentStates) {
+    this.currentStates = currentStates;
+  }
+
+  @Override
+  public void setCurrentErrorMessage(String message) {
+    this.currentErrorMessage = message;
+  }
+
+  @Override
+  public String getCurrentErrorMessage() {
+    return currentErrorMessage;
+  }
+
+  @Override
+  public STATES getCurrentStates() {
+    return currentStates;
+  }
 }

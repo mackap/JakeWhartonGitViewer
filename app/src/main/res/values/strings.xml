@@ -6,5 +6,7 @@
     <string name="text_watch">Watch:</string>
     <string name="text_issues">Issues:</string>
     <string name="text_ok">Ok</string>
+    <string name="text_load">Load</string>
+    <string name="text_load_more">Load more</string>
 
 </resources>
